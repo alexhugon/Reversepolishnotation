@@ -39,9 +39,18 @@ pile* ajoutpile(pile* comm, pile* niveau)
     return niveau;
 }
 
+void supprime(pile* niveau) /* Libère l'espace mémoire de chaque level de la pile */
+{
+    if ( niveau != NULL ) /* Pile vidé de ses niveau, plus de niveau */
+    {
+        supprime(niveau->suivant);
+        free(niveau);
+    }
+}
+
 void afficherpile(pile* niveau, int etage) /* Affiche les valeurs des différents niveau de la pile */
 {
-    if ( niveau != NULL ) 
+    if ( niveau != NULL && etage < 20) 
     {
         afficherpile(niveau->suivant, etage + 1);
         printf("%d", niveau->valeur);
@@ -117,6 +126,7 @@ pile* add( pile* niveau ) /* addition */
     }
     int gauche = niveau->suivant->valeur, droit = niveau->valeur;
     pile* suivant = niveau->suivant->suivant;
+    free(niveau->suivant);
     free(niveau);
     return ajoutpile(suivant, pilesuivant(gauche+droit, suivant));
 }
@@ -171,6 +181,7 @@ int main()
     }
     afficherpile(commande,0);
     printf("\n");
+    supprime(commande);
 
     return 0;
 }
