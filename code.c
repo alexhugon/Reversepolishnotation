@@ -4,11 +4,9 @@
 #include <ctype.h>
 
 #define TAILLEINPUT 11
-int err =0;
-/**
- * Auto-generated code below aims at helping you parse
- * the standard input according to the problem statement.
- **/
+int erreur =0;
+
+
 typedef struct pile
 {
         int valeur;
@@ -48,7 +46,7 @@ void supprime(pile* niveau)
     }
 }
 
-void afficherpile(pile* niveau, int etage) /* Affiche les valeurs des différents niveau de la pile */
+void afficherpile(pile* niveau, int etage) /* On affiche la pile */
 {
     if ( niveau != NULL && etage < 20) 
     {
@@ -57,7 +55,7 @@ void afficherpile(pile* niveau, int etage) /* Affiche les valeurs des différent
         if ( etage != 0){printf(" ");}
     }
 }
-int intoupas (char instruction[TAILLEINPUT])
+int intoupas (char instruction[TAILLEINPUT])  /* POURQUOI TU INT ! */
 {
     int i;
     for ( i = 0; i < TAILLEINPUT && instruction[i] != '\0'; i++ )
@@ -65,12 +63,12 @@ int intoupas (char instruction[TAILLEINPUT])
             return 0;
     return 1;
 }
-int transformint (char instruction[TAILLEINPUT])
+int transformint (char instruction[TAILLEINPUT]) /* transforme en int..... */
 {
     char *ptr;
     return strtol(instruction, &ptr, 10);
 }
-pile* pop( pile* niveau )
+pile* pop( pile* niveau )  /* Snap fingers */
 {
     pile* precedent = NULL;
     if ( niveau != NULL ) 
@@ -80,13 +78,11 @@ pile* pop( pile* niveau )
     }
     return precedent;
 }
-pile* divi( pile* niveau )
+pile* divi( pile* niveau )  /* division */
 {
-    if ( niveau == NULL ) 
-        return NULL;
     if ( niveau->suivant == NULL ) 
     {
-        err = 1;
+        erreur = 1;
         niveau = pop(niveau);
         niveau = pop(niveau);
         return niveau;
@@ -94,7 +90,7 @@ pile* divi( pile* niveau )
     int gauche = niveau->suivant->valeur, droit = niveau->valeur;
     if ( droit == 0 )
     {
-        err = 1;
+        erreur = 1;
         niveau = pop(niveau);
         niveau = pop(niveau);
         return niveau;
@@ -104,13 +100,11 @@ pile* divi( pile* niveau )
     free(niveau);
     return ajoutpile(suivant, pilesuivant(gauche/droit, suivant));
 }
-pile* mul( pile* niveau )
+pile* mul( pile* niveau ) /* Multiplication */
 {
-    if ( niveau == NULL ) 
-        return NULL;
     if ( niveau->suivant == NULL ) 
     {
-        err = 1;
+        erreur = 1;
         niveau = pop(niveau);
         return niveau;
     }
@@ -121,13 +115,11 @@ pile* mul( pile* niveau )
     return ajoutpile(suivant, pilesuivant(gauche*droit, suivant));
 }
 
-pile* mod( pile* niveau )
+pile* mod( pile* niveau ) /* MODULO */
 {
-    if ( niveau == NULL ) 
-        return NULL;
     if ( niveau->suivant == NULL ) 
     {
-        err = 1;
+        erreur = 1;
         free(niveau);
         return niveau;
     }
@@ -139,11 +131,11 @@ pile* mod( pile* niveau )
 }
 
 
-pile* rol( pile* prec, pile* niveau, int o)
+pile* rol( pile* prec, pile* niveau, int o)  /* DO A BARRELROLL*/
 {
     if ( prec == NULL || niveau == NULL ) 
     {
-        err = 1;
+        erreur = 1;
         return 0;
     }
     if ( o == 1 )
@@ -157,10 +149,8 @@ pile* rol( pile* prec, pile* niveau, int o)
     else
          return rol ( niveau, niveau->suivant, o-1 );
 }
-pile* swp( pile* niveau )
+pile* swp( pile* niveau ) /* SWAP */
 {
-    if ( niveau == NULL )
-        return NULL;
     if ( niveau->suivant != NULL )
     {
         int swap = niveau->valeur;
@@ -172,11 +162,9 @@ pile* swp( pile* niveau )
 
 pile* sub( pile* niveau ) /* soustraction */
 {
-    if ( niveau == NULL ) 
-        return NULL;
     if ( niveau->suivant == NULL )
     {
-        err = 1;
+        erreur = 1;
         niveau = pop(niveau);
         return niveau;
     }
@@ -189,11 +177,9 @@ pile* sub( pile* niveau ) /* soustraction */
 
 pile* add( pile* niveau ) /* addition */
 {
-    if ( niveau == NULL )
-        return NULL;
     if ( niveau->suivant == NULL )
     {
-        err = 1;
+        erreur = 1;
         niveau = pop(niveau);
         return niveau;
     }
@@ -215,24 +201,24 @@ pile* operation ( pile* commande, char instruction[TAILLEINPUT] )
         n = rol(commande, commande->suivant, n-1);
         commande = ajoutpile(commande, pilesuivant(n, commande));
     }
-    else if ( !strcmp("SWP", instruction) )
+    else if ( !strcmp("SWP", instruction))
         commande = swp(commande);
-    else if ( !strcmp("DUP", instruction) )
+    else if ( !strcmp("DUP", instruction))
         commande = dup(commande);
-    else if ( !strcmp("POP", instruction) )
+    else if ( !strcmp("POP", instruction))
         commande = pop(commande);
-    else if ( !strcmp("MOD", instruction) )
+    else if ( !strcmp("MOD", instruction))
         commande = mod(commande);
-    else if ( !strcmp("DIV", instruction) )
+    else if ( !strcmp("DIV", instruction))
         commande = divi(commande);
-    else if ( !strcmp("MUL", instruction) )
+    else if ( !strcmp("MUL", instruction))
         commande = mul(commande);
-    else if ( !strcmp("SUB", instruction) )
+    else if ( !strcmp("SUB", instruction))
         commande = sub(commande);
-    else if ( !strcmp("ADD", instruction) )
+    else if ( !strcmp("ADD", instruction))
         commande = add(commande);
     else
-        err = 1;
+        erreur = 1;
     return commande;
 }
 
@@ -253,7 +239,7 @@ int main()
         
     }
     afficherpile(commande,0);
-    if ( err == 1)
+    if ( erreur == 1)
     {
          printf(" ERROR");
     }
