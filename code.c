@@ -20,7 +20,7 @@ pile* pilesuivant(int valeur, pile* precedent) /* Ajoute un niveau au dessus de 
     pile* suivant = (pile*)malloc(sizeof(pile));
     if ( suivant == NULL )
     {
-        fprintf(stderr, "Mémoire insuffisante à l'ajout d'un niveau dasn la pile\n");
+        fprintf(stderr, "Mémoire insuffisante \n");
         exit(1);
     }
     suivant->valeur = valeur;
@@ -39,9 +39,9 @@ pile* ajoutpile(pile* comm, pile* niveau)
     return niveau;
 }
 
-void supprime(pile* niveau) /* Libère l'espace mémoire de chaque level de la pile */
+void supprime(pile* niveau) 
 {
-    if ( niveau != NULL ) /* Pile vidé de ses niveau, plus de niveau */
+    if ( niveau != NULL ) 
     {
         supprime(niveau->suivant);
         free(niveau);
@@ -61,7 +61,7 @@ int intoupas (char instruction[TAILLEINPUT])
 {
     int i;
     for ( i = 0; i < TAILLEINPUT && instruction[i] != '\0'; i++ )
-        if ( instruction[0] != '-' && !isdigit(instruction[i]) ) // n'est pas un char et n'est pas un -
+        if ( instruction[0] != '-' && !isdigit(instruction[i]) ) 
             return 0;
     return 1;
 }
@@ -70,30 +70,103 @@ int transformint (char instruction[TAILLEINPUT])
     char *ptr;
     return strtol(instruction, &ptr, 10);
 }
+pile* pop( pile* niveau )
+{
+    pile* precedent = NULL;
+    if ( niveau != NULL ) 
+    {
+        precedent = niveau->suivant;
+        free(niveau);
+    }
+    return precedent;
+}
 pile* divi( pile* niveau )
 {
-    return niveau;
+    if ( niveau == NULL ) 
+        return NULL;
+    if ( niveau->suivant == NULL ) 
+    {
+        err = 1;
+        niveau = pop(niveau);
+        niveau = pop(niveau);
+        return niveau;
+    }
+    int gauche = niveau->suivant->valeur, droit = niveau->valeur;
+    if ( droit == 0 )
+    {
+        err = 1;
+        niveau = pop(niveau);
+        niveau = pop(niveau);
+        return niveau;
+    }
+    pile* suivant = niveau->suivant->suivant;
+    free(niveau->suivant);
+    free(niveau);
+    return ajoutpile(suivant, pilesuivant(gauche/droit, suivant));
 }
 pile* mul( pile* niveau )
 {
-    return niveau;
+    if ( niveau == NULL ) 
+        return NULL;
+    if ( niveau->suivant == NULL ) 
+    {
+        err = 1;
+        niveau = pop(niveau);
+        return niveau;
+    }
+    int gauche = niveau->suivant->valeur, droit = niveau->valeur;
+    pile* suivant = niveau->suivant->suivant;
+    free(niveau->suivant);
+    free(niveau);
+    return ajoutpile(suivant, pilesuivant(gauche*droit, suivant));
 }
 
 pile* mod( pile* niveau )
 {
-    return niveau;
+    if ( niveau == NULL ) 
+        return NULL;
+    if ( niveau->suivant == NULL ) 
+    {
+        err = 1;
+        free(niveau);
+        return niveau;
+    }
+    int gauche = niveau->suivant->valeur, droit = niveau->valeur;
+    pile* suivant = niveau->suivant->suivant;
+    free(niveau->suivant);
+    free(niveau);
+    return ajoutpile(suivant, pilesuivant(gauche%droit, suivant));
 }
 
-pile* pop( pile* niveau )
-{
-    return niveau;
-}
+
 pile* rol( pile* prec, pile* niveau, int o)
 {
-    return niveau;
+    if ( prec == NULL || niveau == NULL ) 
+    {
+        err = 1;
+        return 0;
+    }
+    if ( o == 1 )
+    {
+        pile* suivant = niveau->suivant;
+        int valeur = niveau->valeur;
+        free(niveau); 
+        prec->suivant = suivant;
+        return valeur;
+    }
+    else
+         return rol ( niveau, niveau->suivant, o-1 );
 }
 pile* swp( pile* niveau )
 {
+    if ( niveau == NULL )
+        return NULL;
+    if ( niveau->suivant != NULL )
+    {
+        int swap = niveau->valeur;
+        niveau->valeur = niveau->suivant->valeur;
+        niveau->suivant->valeur = swap;
+    }
     return niveau;
 }
 
@@ -180,6 +253,10 @@ int main()
         
     }
     afficherpile(commande,0);
+    if ( err == 1)
+    {
+         printf(" ERROR");
+    }
     printf("\n");
     supprime(commande);
 
