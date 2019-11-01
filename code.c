@@ -15,7 +15,7 @@ typedef struct pile
         struct pile* suivant;
 }pile;
 
-pile* pilesuivant(int valeur, pile* precedent) /* Ajoute un niveau au dessus de la pile donné en paramètre */
+pile* pilesuivant(int valeur, pile* precedent) /* niveau de pile en plus */
 {
     pile* suivant = (pile*)malloc(sizeof(pile));
     if ( suivant == NULL )
@@ -24,18 +24,18 @@ pile* pilesuivant(int valeur, pile* precedent) /* Ajoute un niveau au dessus de 
         exit(1);
     }
     suivant->valeur = valeur;
-    suivant->suivant = suivant;
+    suivant->suivant = precedent;
     return suivant;
 }
 
 pile* ajoutpile(pile* comm, pile* niveau)
 {
-    if ( comm == NULL ) /* Aucune pile, deviens la pile */
+    if ( comm == NULL ) /* si rien pour le moment, débute une pile*/
     {
         niveau->suivant = NULL;
         return niveau;
     }
-    niveau->suivant = niveau;
+    niveau->suivant = comm;
     return niveau;
 }
 
