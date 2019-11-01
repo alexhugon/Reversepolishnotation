@@ -48,7 +48,7 @@ void supprime(pile* niveau)
 
 void afficherpile(pile* niveau, int etage) /* On affiche la pile */
 {
-    if ( niveau != NULL && etage < 20) 
+    if ( niveau != NULL) 
     {
         afficherpile(niveau->suivant, etage + 1);
         printf("%d", niveau->valeur);
@@ -140,11 +140,11 @@ pile* rol( pile* prec, pile* niveau, int o)  /* DO A BARRELROLL*/
     }
     if ( o == 1 )
     {
-        pile* suivant = niveau->suivant;
-        int valeur = niveau->valeur;
+        pile* swap = niveau->suivant;
+        int num = niveau->valeur;
         free(niveau); 
-        prec->suivant = suivant;
-        return valeur;
+        prec->suivant = swap;
+        return num;
     }
     else
          return rol ( niveau, niveau->suivant, o-1 );
@@ -224,24 +224,32 @@ pile* operation ( pile* commande, char instruction[TAILLEINPUT] )
 
 int main()
 {
-    
+    pile* commande = NULL;
     int N;
     scanf("%d", &N);
-    pile* commande = NULL;
-    for (int i = 0; i < N; i++) {
+    for (int i = 0; i < N && erreur != 1; i++) 
+    {
         char instruction[TAILLEINPUT];
         scanf("%s", instruction);
-        if ( intoupas(instruction) )
-            commande = ajoutpile(commande, pilesuivant(transformint(instruction), commande));
-        else
-            commande = operation(commande, instruction);
         
+        if (intoupas(instruction))
+        {
+            commande = ajoutpile(commande, pilesuivant(transformint(instruction), commande));
+        }
+        else
+        {
+            commande = operation(commande, instruction);
+        }
         
     }
     afficherpile(commande,0);
     if ( erreur == 1)
     {
-         printf(" ERROR");
+        if (commande != NULL )
+        {
+            printf(" ");
+        }
+        printf("ERROR");
     }
     printf("\n");
     supprime(commande);
