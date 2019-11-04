@@ -12,6 +12,7 @@ typedef struct pile
         int valeur;
         struct pile* suivant;
 }pile;
+ 
 
 pile* pilesuivant(int valeur, pile* precedent) /* niveau de pile en plus */
 {
@@ -80,10 +81,11 @@ pile* pop( pile* niveau )  /* Snap fingers */
 }
 pile* divi( pile* niveau )  /* division */
 {
+    if ( niveau == NULL)
+        return NULL;
     if ( niveau->suivant == NULL ) 
     {
         erreur = 1;
-        niveau = pop(niveau);
         niveau = pop(niveau);
         return niveau;
     }
@@ -96,12 +98,14 @@ pile* divi( pile* niveau )  /* division */
         return niveau;
     }
     pile* suivant = niveau->suivant->suivant;
-    free(niveau->suivant);
     free(niveau);
+    free(niveau->suivant);
     return ajoutpile(suivant, pilesuivant(gauche/droit, suivant));
 }
 pile* mul( pile* niveau ) /* Multiplication */
 {
+    if ( niveau == NULL)
+        return NULL;
     if ( niveau->suivant == NULL ) 
     {
         erreur = 1;
@@ -110,23 +114,25 @@ pile* mul( pile* niveau ) /* Multiplication */
     }
     int gauche = niveau->suivant->valeur, droit = niveau->valeur;
     pile* suivant = niveau->suivant->suivant;
-    free(niveau->suivant);
     free(niveau);
+    free(niveau->suivant);
     return ajoutpile(suivant, pilesuivant(gauche*droit, suivant));
 }
 
 pile* mod( pile* niveau ) /* MODULO */
 {
+    if ( niveau == NULL)
+        return NULL;
     if ( niveau->suivant == NULL ) 
     {
         erreur = 1;
-        free(niveau);
+        niveau = pop(niveau);
         return niveau;
     }
     int gauche = niveau->suivant->valeur, droit = niveau->valeur;
     pile* suivant = niveau->suivant->suivant;
-    free(niveau->suivant);
     free(niveau);
+    free(niveau->suivant);
     return ajoutpile(suivant, pilesuivant(gauche%droit, suivant));
 }
 
@@ -151,6 +157,8 @@ pile* rol( pile* prec, pile* niveau, int o)  /* DO A BARRELROLL*/
 }
 pile* swp( pile* niveau ) /* SWAP */
 {
+    if ( niveau == NULL)
+        return NULL;
     if ( niveau->suivant != NULL )
     {
         int swap = niveau->valeur;
@@ -162,6 +170,8 @@ pile* swp( pile* niveau ) /* SWAP */
 
 pile* sub( pile* niveau ) /* soustraction */
 {
+    if ( niveau == NULL)
+        return NULL;
     if ( niveau->suivant == NULL )
     {
         erreur = 1;
@@ -170,13 +180,15 @@ pile* sub( pile* niveau ) /* soustraction */
     }
     int gauche = niveau->suivant->valeur, droit = niveau->valeur;
     pile* suivant = niveau->suivant->suivant;
-    free(niveau->suivant);
     free(niveau);
+    free(niveau->suivant);
     return ajoutpile(suivant, pilesuivant(gauche-droit, suivant));
 }
 
 pile* add( pile* niveau ) /* addition */
 {
+    if ( niveau == NULL)
+        return NULL;
     if ( niveau->suivant == NULL )
     {
         erreur = 1;
@@ -185,8 +197,8 @@ pile* add( pile* niveau ) /* addition */
     }
     int gauche = niveau->suivant->valeur, droit = niveau->valeur;
     pile* suivant = niveau->suivant->suivant;
-    free(niveau->suivant);
     free(niveau);
+    free(niveau->suivant);
     return ajoutpile(suivant, pilesuivant(gauche+droit, suivant));
 }
 
@@ -251,6 +263,7 @@ int main()
         }
         printf("ERROR");
     }
+    
     printf("\n");
     supprime(commande);
 
