@@ -201,7 +201,12 @@ pile* add( pile* niveau ) /* addition */
     free(niveau->suivant);
     return ajoutpile(suivant, pilesuivant(gauche+droit, suivant));
 }
-
+pile* dup(pile* niveau)
+{
+   if ( niveau == NULL )
+        return NULL;
+    return ajoutpile(niveau, pilesuivant(niveau->valeur, niveau));
+}
 
 
 pile* operation ( pile* commande, char instruction[TAILLEINPUT] )
@@ -215,6 +220,8 @@ pile* operation ( pile* commande, char instruction[TAILLEINPUT] )
     }
     else if ( !strcmp("SWP", instruction))
         commande = swp(commande);
+    else if ( !strcmp("DUP", instruction))
+        commande = dup(commande);
     else if ( !strcmp("DUP", instruction))
         commande = dup(commande);
     else if ( !strcmp("POP", instruction))
